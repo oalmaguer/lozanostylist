@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lozano Stylist — Salón de Belleza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@1,400;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:              #ffffff;
+      --bg-subtle:       #f8f6f4;
+      --surface:         #ffffff;
+      --surface-raised:  #f4f0ec;
+      --border:          rgba(0, 0, 0, 0.08);
+      --border-strong:   rgba(0, 0, 0, 0.14);
+      --text-primary:    #0a0a0a;
+      --text-secondary:  #444444;
+      --text-muted:      #999999;
+      --accent:          #c8375a;
+      --accent-hover:    #a82a4a;
+      --accent-muted:    rgba(200, 55, 90, 0.10);
+      --accent-text:     #ffffff;
+      --blob-gold:       #e8c96b;
+      --blob-rose:       #f0d4dc;
+      --blob-green:      #a8d4b0;
+      --blob-cream:      #f5ede0;
+      --font-display-bold:   'Bebas Neue', sans-serif;
+      --font-display-italic: 'Playfair Display', serif;
+      --font-body:           'Outfit', sans-serif;
+      --dur-fast:   150ms;
+      --dur-base:   250ms;
+      --dur-enter:  550ms;
+      --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-36px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes floatBlob {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50%       { transform: translateY(-18px) rotate(8deg); }
+    }
+    @keyframes tickerScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .animate-entry  { animation: fadeUp 0.6s var(--ease-out) both; }
+    .animate-left   { animation: slideInLeft 0.6s var(--ease-out) both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.38s; }
+    .delay-4 { animation-delay: 0.52s; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+    }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--dur-base);
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      position: relative;
+      transition: color var(--dur-base);
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1.5px;
+      background: var(--accent);
+      transition: width 0.3s var(--ease-out);
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-brand {
+      font-family: var(--font-display-bold);
+      font-size: 26px;
+      letter-spacing: 0.08em;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .nav-brand span { color: var(--accent); }
+
+    .nav-cta {
+      background: var(--text-primary);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background var(--dur-base), transform var(--dur-fast);
+    }
+    .nav-cta:hover { background: var(--accent); transform: scale(1.03); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      padding: 120px 48px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* Blobs */
+    .blob {
+      position: absolute;
+      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatBlob 6s ease-in-out infinite;
+    }
+    .blob-1 {
+      width: 220px; height: 160px;
+      background: var(--blob-gold);
+      top: 14%; left: 6%;
+      animation-delay: 0s;
+      opacity: 0.75;
+    }
+    .blob-2 {
+      width: 180px; height: 180px;
+      background: var(--blob-green);
+      top: 20%; right: 8%;
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      animation-delay: 1.5s;
+      opacity: 0.65;
+    }
+    .blob-3 {
+      width: 140px; height: 100px;
+      background: var(--blob-rose);
+      bottom: 22%; left: 10%;
+      animation-delay: 3s;
+      opacity: 0.8;
+    }
+    .blob-4 {
+      width: 200px; height: 150px;
+      background: var(--blob-cream);
+      bottom: 15%; right: 6%;
+      border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
+      animation-delay: 2s;
+      opacity: 0.7;
+    }
+
+    .hero-eyebrow {
+      position: relative; z-index: 1;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .hero-headline {
+      position: relative; z-index: 1;
+      line-height: 1;
+      margin-bottom: 28px;
+    }
+    .hero-headline .bold-line {
+      display: block;
+      font-family: var(--font-display-bold);
+      font-size: clamp(72px, 13vw, 160px);
+      letter-spacing: 0.04em;
+      color: var(--text-primary);
+    }
+    .hero-headline .italic-line {
+      display: block;
+      font-family: var(--font-display-italic);
+      font-style: italic;
+      font-size: clamp(48px, 8vw, 100px);
+      color: var(--accent);
+      margin-top: -8px;
+    }
+
+    .hero-sub {
+      position: relative; z-index: 1;
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 460px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    .hero-btns {
+      position: relative; z-index: 1;
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    }
+    .btn-primary {
+      background: var(--text-primary);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background var(--dur-base), transform var(--dur-fast), box-shadow var(--dur-base);
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(200,55,90,0.25);
+    }
+    .btn-ghost {
+      border: 1.5px solid var(--border-strong);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 13px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: border-color var(--dur-base), color var(--dur-base), transform var(--dur-fast);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* ── TICKER ── */
+    .ticker {
+      background: var(--text-primary);
+      color: #fff;
+      padding: 14px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-flex;
+      animation: tickerScroll 18s linear infinite;
+    }
+    .ticker-item {
+      font-family: var(--font-display-bold);
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      padding: 0 40px;
+    }
+    .ticker-dot {
+      color: var(--accent);
+      font-size: 20px;
+      vertical-align: middle;
+      margin: 0 4px;
+    }
+
+    /* ── SERVICES ── */
+    .section { padding: 100px 48px; }
+    .section-alt { background: var(--bg-subtle); }
+
+    .section-label {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      margin-bottom: 60px;
+    }
+    .section-title .bold-part {
+      font-family: var(--font-display-bold);
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      display: block;
+    }
+    .section-title .italic-part {
+      font-family: var(--font-display-italic);
+      font-style: italic;
+      font-size: clamp(32px, 4.5vw, 54px);
+      color: var(--accent);
+      display: block;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.28s var(--ease-spring), box-shadow 0.28s ease;
+      cursor: default;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s var(--ease-out);
+    }
+    .service-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      font-size: 32px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .service-name {
+      font-family: var(--font-display-bold);
+      font-size: 28px;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .service-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .service-price {
+      font-family: var(--font-display-italic);
+      font-style: italic;
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    /* ── ABOUT ── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-photo-frame {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(145deg, #f0d4dc, #e8c96b, #a8d4b0);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .about-photo-placeholder {
+      font-size: 80px;
+      opacity: 0.4;
+    }
+    .about-badge {
+      position: absolute;
+      bottom: -20px; right: -20px;
+      background: var(--text-primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 120px; height: 120px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: var(--font-display-bold);
+      font-size: 36px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+    }
+    .about-badge small {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    .about-text .section-label { margin-bottom: 16px; }
+    .about-text p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .stats-row {
+      display: flex; gap: 40px;
+      margin-top: 36px;
+    }
+    .stat-item { }
+    .stat-number {
+      font-family: var(--font-display-bold);
+      font-size: 48px;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* ── GALLERY ── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto;
+      gap: 16px;
+    }
+    .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s var(--ease-spring);
+    }
+    .gallery-item:hover { transform: scale(1.02); }
+    .gallery-item.tall { grid-row: span 2; }
+    .gallery-swatch {
+      width: 100%; height: 100%; min-height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+    }
+    .g1 { background: linear-gradient(135deg, #f0d4dc 0%, #c8375a 100%); min-height: 260px; }
+    .g2 { background: linear-gradient(135deg, #e8c96b 0%, #d4a820 100%); min-height: 260px; }
+    .g3 { background: linear-gradient(135deg, #a8d4b0 0%, #5aab6e 100%); min-height: 540px; }
+    .g4 { background: linear-gradient(135deg, #d4c9e8 0%, #8b70c0 100%); min-height: 260px; }
+    .g5 { background: linear-gradient(135deg, #ffd4a0 0%, #e88840 100%); min-height: 260px; }
+    .g6 { background: linear-gradient(135deg, #c0dff5 0%, #4a90d0 100%); min-height: 260px; }
+
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background var(--dur-base);
+      display: flex; align-items: flex-end;
+      padding: 20px;
+    }
+    .gallery-item:hover .gallery-overlay { background: rgba(0,0,0,0.25); }
+    .gallery-tag {
+      background: rgba(255,255,255,0.9);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border-radius: 100px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s var(--ease-out);
+    }
+    .gallery-item:hover .gallery-tag { opacity: 1; transform: none; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: transform 0.28s var(--ease-spring), box-shadow 0.28s ease;
+    }
+    .testimonial-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
+    .stars { color: var(--accent); font-size: 16px; margin-bottom: 16px; letter-spacing: 2px; }
+    .testimonial-text {
+      font-family: var(--font-display-italic);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .author-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .av1 { background: linear-gradient(135deg, #c8375a, #f0d4dc); }
+    .av2 { background: linear-gradient(135deg, #a8d4b0, #5aab6e); }
+    .av3 { background: linear-gradient(135deg, #e8c96b, #d4a820); }
+    .author-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .author-city {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── BOOKING SECTION ── */
+    .booking-section {
+      background: var(--text-primary);
+      padding: 100px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .booking-section::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(200,55,90,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .booking-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 16px;
+    }
+    .booking-headline .bold-line {
+      font-family: var(--font-display-bold);
+      font-size: clamp(52px, 9vw, 110px);
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      display: block;
+      line-height: 1;
+    }
+    .booking-headline .italic-line {
+      font-family: var(--font-display-italic);
+      font-style: italic;
+      font-size: clamp(36px, 6vw, 72px);
+      color: var(--blob-gold);
+      display: block;
+    }
+    .booking-sub {
+      color: rgba(255,255,255,0.55);
+      font-size: 16px;
+      max-width: 400px;
+      margin: 24px auto 44px;
+      line-height: 1.7;
+    }
+    .booking-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-light {
+      background: #ffffff;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background var(--dur-base), transform var(--dur-fast), box-shadow var(--dur-base);
+    }
+    .btn-light:hover {
+      background: var(--blob-gold);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(232,201,107,0.35);
+    }
+    .btn-outline-light {
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 15px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: border-color var(--dur-base), color var(--dur-base);
+    }
+    .btn-outline-light:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
+
+    /* ── CONTACT / INFO ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+    }
+    .contact-card {
+      text-align: center;
+      padding: 36px 24px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: border-color var(--dur-base), transform 0.28s var(--ease-spring);
+    }
+    .contact-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .contact-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+    .contact-title {
+      font-family: var(--font-display-bold);
+      font-size: 22px;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .contact-info {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .contact-info a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .contact-info a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--blob-rose);
+      border-radius: 28px 28px 0 0;
+      margin: 0 20px;
+      padding: 60px 48px 40px;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-brand .brand-name {
+      font-family: var(--font-display-bold);
+      font-size: 38px;
+      letter-spacing: 0.08em;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .footer-brand .brand-name span { color: var(--accent); }
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 240px;
+      line-height: 1.6;
+    }
+    .footer-links { display: flex; gap: 60px; flex-wrap: wrap; }
+    .footer-col h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--dur-base);
+    }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p { font-size: 13px; color: var(--text-muted); }
+    .social-links { display: flex; gap: 12px; }
+    .social-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background var(--dur-base), transform var(--dur-fast);
+    }
+    .social-btn:hover { background: var(--accent); transform: scale(1.1); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .section { padding: 72px 24px; }
+      .about-layout { grid-template-columns: 1fr; gap: 48px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .g3 { min-height: 300px; }
+      .footer { margin: 0; border-radius: 0; }
+      .footer-top { flex-direction: column; }
+    }
+    @media (max-width: 580px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item.tall { grid-row: span 1; }
+      .stats-row { gap: 24px; }
+      .booking-section { padding: 72px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#galeria">Galería</a></li>
+    </ul>
+    <a class="nav-brand" href="#">LOZANO<span>.</span></a>
+    <a class="nav-cta" href="#reserva">Reservar Cita</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+
+    <p class="hero-eyebrow animate-entry delay-1">✦ Salón de Belleza Profesional ✦ Guadalajara</p>
+
+    <h1 class="hero-headline">
+      <span class="bold-line animate-entry delay-2">LOZANO</span>
+      <em class="italic-line animate-entry delay-3">Stylist</em>
+    </h1>
+
+    <p class="hero-sub animate-entry delay-4">
+      Donde cada cabello cuenta su propia historia. Arte, estilo y pasión en cada corte.
+    </p>
+
+    <div class="hero-btns animate-entry delay-4">
+      <a href="#reserva" class="btn-primary">Agendar Cita</a>
+      <a href="#servicios" class="btn-ghost">Ver Servicios</a>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">CORTE <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">COLOR <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">PEINADO <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">TRATAMIENTO <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">ALISADO <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">MECHAS <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">KERATINA <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">CORTE <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">COLOR <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">PEINADO <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">TRATAMIENTO <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">ALISADO <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">MECHAS <span class="ticker-dot">◆</span></span>
+      <span class="ticker-item">KERATINA <span class="ticker-dot">◆</span></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="section" id="servicios">
+    <div style="max-width:1100px; margin:0 auto;">
+      <p class="section-label reveal">( Nuestros Servicios )</p>
+      <div class="section-title reveal">
+        <span class="bold-part">LO QUE</span>
+        <em class="italic-part">ofrecemos</em>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <span class="service-icon">✂️</span>
+          <div class="service-name">CORTE</div>
+          <p class="service-desc">Cortes personalizados para mujer, hombre y niño. Diseñados para resaltar tu belleza natural con técnicas modernas.</p>
+          <span class="service-price">desde $200</span>
+        </div>
+        <div class="service-card reveal">
+          <span class="service-icon">🎨</span>
+          <div class="service-name">COLOR</div>
+          <p class="service-desc">Tintes, mechas, balayage, ombre y más. Usamos productos premium para colores vibrantes y duraderos.</p>
+          <span class="service-price">desde $450</span>
+        </div>
+        <div class="service-card reveal">
+          <span class="service-icon">💇‍♀️</span>
+          <div class="service-name">ALISADO</div>
+          <p class="service-desc">Tratamiento de keratina y alisado permanente. Cabello liso, sedoso y sin frizz por meses.</p>
+          <span class="service-price">desde $800</span>
+        </div>
+        <div class="service-card reveal">
+          <span class="service-icon">🌿</span>
+          <div class="service-name">TRATAMIENTO</div>
+          <p class="service-desc">Hidratación profunda, reconstrucción y nutrición capilar. Tu cabello merece el mejor cuidado.</p>
+          <span class="service-price">desde $350</span>
+        </div>
+        <div class="service-card reveal">
+          <span class="service-icon">💍</span>
+          <div class="service-name">PEINADO</div>
+          <p class="service-desc">Peinados para bodas, quinceañeras y eventos especiales. Lucirás espectacular en tu gran día.</p>
+          <span class="service-price">desde $500</span>
+        </div>
+        <div class="service-card reveal">
+          <span class="service-icon">✨</span>
+          <div class="service-name">MECHAS</div>
+          <p class="service-desc">Mechas californianas, francesas y técnicas modernas. Dale luz y dimensión a tu cabello.</p>
+          <span class="service-price">desde $600</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section section-alt" id="nosotros">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="about-layout">
+        <div class="about-visual reveal">
+          <div class="about-photo-frame">
+            <span class="about-photo-placeholder">💇</span>
+          </div>
+          <div class="about-badge">
+            10+
+            <small>Años</small>
+          </div>
+        </div>
+        <div class="about-text reveal">
+          <p class="section-label">( Nuestra Historia )</p>
+          <div class="section-title" style="margin-bottom:28px;">
+            <span class="bold-part">PASIÓN POR</span>
+            <em class="italic-part">el estilo</em>
+          </div>
+          <p>
+            Somos un equipo de estilistas apasionados con más de 10 años de experiencia transformando looks y elevando la confianza de nuestros clientes.
+          </p>
+          <p>
+            En <strong>Lozano Stylist</strong> creemos que un buen corte va más allá de la estética — es una expresión de quién eres. Nos especializamos en técnicas de vanguardia con un trato personalizado y cálido.
+          </p>
+          <p>
+            Cada visita es una experiencia única: desde la consulta inicial hasta el último detalle, cuidamos cada aspecto de tu servicio.
+          </p>
+          <div class="stats-row">
+            <div class="stat-item">
+              <div class="stat-number">2K+</div>
+              <div class="stat-label">Clientes Felices</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">12</div>
+              <div class="stat-label">Servicios Disponibles</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">5⭐</div>
+              <div class="stat-label">Calificación</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section" id="galeria">
+    <div style="max-width:1100px; margin:0 auto;">
+      <p class="section-label reveal">( Nuestro Trabajo )</p>
+      <div class="section-title reveal">
+        <span class="bold-part">GALERÍA</span>
+        <em class="italic-part">de estilos</em>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item reveal">
+          <div class="gallery-swatch g1">💅</div>
+          <div class="gallery-overlay"><span class="gallery-tag">Balayage</span></div>
+        </div>
+        <div class="gallery-item reveal">
+          <div class="gallery-swatch g2">✨</div>
+          <div class="gallery-overlay"><span class="gallery-tag">Mechas Doradas</span></div>
+        </div>
+        <div class="gallery-item tall reveal">
+          <div class="gallery-swatch g3" style="min-height:100%;">🌿</div>
+          <div class="gallery-overlay"><span class="gallery-tag">Corte & Color</span></div>
+        </div>
+        <div class="gallery-item reveal">
+          <div class="gallery-swatch g4">💜</div>
+          <div class="gallery-overlay"><span class="gallery-tag">Color Fantasía</span></div>
+        </div>
+        <div class="gallery-item reveal">
+          <div class="gallery-swatch g5">🧡</div>
+          <div class="gallery-overlay"><span class="gallery-tag">Keratina</span></div>
+        </div>
+        <div class="gallery-item reveal" style="grid-column: span 1;">
+          <div class="gallery-swatch g6">💙</div>
+          <div class="gallery-overlay"><span class="gallery-tag">Peinado Novia</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section section-alt" id="resenas">
+    <div style="max-width:1100px; margin:0 auto;">
+      <p class="section-label reveal">( Reseñas )</p>
+      <div class="section-title reveal">
+        <span class="bold-part">LO QUE DICEN</span>
+        <em class="italic-part">nuestras clientas</em>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"El mejor salón en el que he estado. Mi cabello quedó increíble y el trato fue muy profesional."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar av1">M</div>
+            <div>
+              <div class="author-name">María González</div>
+              <div class="author-city">Guadalajara, Jalisco</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Llevé una foto de referencia y lo lograron a la perfección. ¡Súper recomendado! Volvería mil veces."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar av2">L</div>
+            <div>
+              <div class="author-name">Lucía Ramírez</div>
+              <div class="author-city">Zapopan, Jalisco</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Me hicieron el peinado para mi boda y fue exactamente lo que soñé. ¡Gracias, Lozano Stylist!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar av3">V</div>
+            <div>
+              <div class="author-name">Valeria Torres</div>
+              <div class="author-city">Tlaquepaque, Jalisco</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="booking-section" id="reserva">
+    <p class="booking-eyebrow animate-entry">✦ Agenda tu visita ✦</p>
+    <div class="booking-headline">
+      <span class="bold-line reveal">RESERVA TU</span>
+      <em class="italic-line reveal">cita hoy</em>
+    </div>
+    <p class="booking-sub reveal">Transforma tu look con nosotros. Estamos listos para hacer de tu experiencia algo especial.</p>
+    <div class="booking-btns reveal">
+      <a href="https://wa.me/523312345678?text=Hola,%20me%20gustaría%20agendar%20una%20cita" class="btn-light" target="_blank">📱 WhatsApp</a>
+      <a href="tel:+523312345678" class="btn-outline-light">📞 Llamar Ahora</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contacto">
+    <div style="max-width:1100px; margin:0 auto;">
+      <p class="section-label reveal">( Encuéntranos )</p>
+      <div class="section-title reveal">
+        <span class="bold-part">HORARIOS</span>
+        <em class="italic-part">& contacto</em>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card reveal">
+          <span class="contact-icon">📍</span>
+          <div class="contact-title">DIRECCIÓN</div>
+          <p class="contact-info">Av. Vallarta 1234<br>Col. Americana<br>Guadalajara, Jalisco</p>
+        </div>
+        <div class="contact-card reveal">
+          <span class="contact-icon">🕐</span>
+          <div class="contact-title">HORARIOS</div>
+          <p class="contact-info">Lun – Vie: 9:00 – 19:00<br>Sábado: 9:00 – 18:00<br>Domingo: Cerrado</p>
+        </div>
+        <div class="contact-card reveal">
+          <span class="contact-icon">📱</span>
+          <div class="contact-title">TELÉFONO</div>
+          <p class="contact-info">
+            <a href="tel:+523312345678">+52 (33) 1234-5678</a><br>
+            <a href="https://wa.me/523312345678" target="_blank">WhatsApp disponible</a>
+          </p>
+        </div>
+        <div class="contact-card reveal">
+          <span class="contact-icon">📸</span>
+          <div class="contact-title">REDES</div>
+          <p class="contact-info">
+            <a href="#">@lozanostylist</a><br>
+            Instagram · Facebook · TikTok
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand-name">LOZANO<span>.</span></div>
+        <p>Arte y estilo en cada corte. Tu belleza, nuestra pasión.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Servicios</h4>
+          <ul>
+            <li><a href="#">Corte de Cabello</a></li>
+            <li><a href="#">Coloración</a></li>
+            <li><a href="#">Alisado</a></li>
+            <li><a href="#">Tratamientos</a></li>
+            <li><a href="#">Peinados</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Salón</h4>
+          <ul>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#galeria">Galería</a></li>
+            <li><a href="#resenas">Reseñas</a></li>
+            <li><a href="#reserva">Reservaciones</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Lozano Stylist. Todos los derechos reservados.</p>
+      <div class="social-links">
+        <a class="social-btn" href="#" title="Instagram">📸</a>
+        <a class="social-btn" href="#" title="Facebook">👍</a>
+        <a class="social-btn" href="#" title="TikTok">🎵</a>
+        <a class="social-btn" href="#" title="WhatsApp">💬</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('is-visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
