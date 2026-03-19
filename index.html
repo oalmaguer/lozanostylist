@@ -1,1076 +1,1916 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lozano Stylist — Salón de Belleza</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@1,400;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lozano Stylists — Salón de Belleza en Mazatlán</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /*
+      Style: "Rose Blanc"
+      Colors: white + blush pink, soft and luminous
+      Type: Playfair Display (display) + DM Sans (body)
+      Layout: Full-bleed cinematic hero → stripe rhythm sections
+      Decor: Delicate pink rule lines + gradient washes
+    */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --bg:              #ffffff;
-      --bg-subtle:       #f8f6f4;
-      --surface:         #ffffff;
-      --surface-raised:  #f4f0ec;
-      --border:          rgba(0, 0, 0, 0.08);
-      --border-strong:   rgba(0, 0, 0, 0.14);
-      --text-primary:    #0a0a0a;
-      --text-secondary:  #444444;
-      --text-muted:      #999999;
-      --accent:          #c8375a;
-      --accent-hover:    #a82a4a;
-      --accent-muted:    rgba(200, 55, 90, 0.10);
-      --accent-text:     #ffffff;
-      --blob-gold:       #e8c96b;
-      --blob-rose:       #f0d4dc;
-      --blob-green:      #a8d4b0;
-      --blob-cream:      #f5ede0;
-      --font-display-bold:   'Bebas Neue', sans-serif;
-      --font-display-italic: 'Playfair Display', serif;
-      --font-body:           'Outfit', sans-serif;
-      --dur-fast:   150ms;
-      --dur-base:   250ms;
-      --dur-enter:  550ms;
-      --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+      --bg: #FEFCFC;
+      --bg-subtle: #FDF6F7;
+      --surface: #FFFFFF;
+      --surface-raised: #FFF0F2;
+      --text-primary: #2C1A1E;
+      --text-secondary: #6B4850;
+      --text-muted: #B08A92;
+      --accent: #D4788A;
+      --accent-hover: #C0607A;
+      --accent-muted: rgba(212, 120, 138, 0.10);
+      --border: #F0DDE0;
+      --gradient-logo: linear-gradient(135deg, #F7A8B8 0%, #D4788A 50%, #A855A0 100%);
+      --dur-fast: 150ms;
+      --dur-base: 250ms;
+      --dur-enter: 550ms;
+      --dur-slow: 800ms;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: var(--font-body);
+      font-family: 'DM Sans', sans-serif;
       background: var(--bg);
       color: var(--text-primary);
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-36px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes floatBlob {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50%       { transform: translateY(-18px) rotate(8deg); }
-    }
-    @keyframes tickerScroll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+    /* ─── Scrollbar ──────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 6px;
     }
 
-    .animate-entry  { animation: fadeUp 0.6s var(--ease-out) both; }
-    .animate-left   { animation: slideInLeft 0.6s var(--ease-out) both; }
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.22s; }
-    .delay-3 { animation-delay: 0.38s; }
-    .delay-4 { animation-delay: 0.52s; }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-subtle);
+    }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
-    }
-    .reveal.is-visible { opacity: 1; transform: none; }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 48px;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      transition: background var(--dur-base);
-    }
-    .nav-links { display: flex; gap: 36px; list-style: none; }
-    .nav-links a {
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      letter-spacing: 0.03em;
-      position: relative;
-      transition: color var(--dur-base);
-    }
-    .nav-links a::after {
-      content: ''; position: absolute; bottom: -3px; left: 0;
-      width: 0; height: 1.5px;
+    ::-webkit-scrollbar-thumb {
       background: var(--accent);
-      transition: width 0.3s var(--ease-out);
+      border-radius: 3px;
     }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-links a:hover::after { width: 100%; }
 
-    .nav-brand {
-      font-family: var(--font-display-bold);
-      font-size: 26px;
-      letter-spacing: 0.08em;
-      color: var(--text-primary);
+    /* ─── Nav ────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background var(--dur-base) ease, padding var(--dur-base) ease;
+    }
+
+    nav.scrolled {
+      background: rgba(254, 252, 252, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 16px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       text-decoration: none;
     }
-    .nav-brand span { color: var(--accent); }
 
-    .nav-cta {
-      background: var(--text-primary);
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 10px 22px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: background var(--dur-base), transform var(--dur-fast);
+    .nav-logo-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #E8855A, #C4529A, #7C5CF6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
     }
-    .nav-cta:hover { background: var(--accent); transform: scale(1.03); }
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      padding: 120px 48px 80px;
+    .nav-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      background: var(--bg);
+      gap: 0;
     }
 
-    /* Blobs */
-    .blob {
+    .nav-logo-inner span:first-child {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 8px;
+      color: var(--text-primary);
+      letter-spacing: 1.5px;
+      line-height: 1;
+    }
+
+    .nav-logo-inner span:last-child {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 6px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .nav-brand {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      text-decoration: none;
+      position: relative;
+      transition: color var(--dur-base) ease;
+    }
+
+    .nav-links a::after {
+      content: '';
       position: absolute;
-      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
-      pointer-events: none;
-      z-index: 0;
-      animation: floatBlob 6s ease-in-out infinite;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width var(--dur-enter) var(--ease-out);
     }
-    .blob-1 {
-      width: 220px; height: 160px;
-      background: var(--blob-gold);
-      top: 14%; left: 6%;
-      animation-delay: 0s;
-      opacity: 0.75;
+
+    .nav-links a:hover {
+      color: var(--text-primary);
     }
-    .blob-2 {
-      width: 180px; height: 180px;
-      background: var(--blob-green);
-      top: 20%; right: 8%;
-      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      animation-delay: 1.5s;
-      opacity: 0.65;
+
+    .nav-links a:hover::after {
+      width: 100%;
     }
-    .blob-3 {
-      width: 140px; height: 100px;
-      background: var(--blob-rose);
-      bottom: 22%; left: 10%;
-      animation-delay: 3s;
-      opacity: 0.8;
+
+    .nav-cta {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--dur-base) ease, color var(--dur-base) ease;
     }
-    .blob-4 {
-      width: 200px; height: 150px;
-      background: var(--blob-cream);
-      bottom: 15%; right: 6%;
-      border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
-      animation-delay: 2s;
-      opacity: 0.7;
+
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--text-primary);
+      transition: all var(--dur-base) ease;
+    }
+
+    /* ─── Hero ───────────────────────────────── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.55;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom,
+          rgba(254, 252, 252, 0.15) 0%,
+          rgba(254, 252, 252, 0.05) 40%,
+          rgba(254, 252, 252, 0.45) 75%,
+          rgba(254, 252, 252, 1) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 24px;
+      max-width: 820px;
     }
 
     .hero-eyebrow {
-      position: relative; z-index: 1;
-      font-family: var(--font-body);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
       font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 20px;
+      color: var(--accent);
+      margin-bottom: 24px;
+      animation: fadeUp 0.8s var(--ease-out) 0.2s both;
     }
 
-    .hero-headline {
-      position: relative; z-index: 1;
-      line-height: 1;
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(56px, 10vw, 120px);
+      line-height: 0.9;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      animation: fadeUp 0.8s var(--ease-out) 0.4s both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-subtitle-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
       margin-bottom: 28px;
-    }
-    .hero-headline .bold-line {
-      display: block;
-      font-family: var(--font-display-bold);
-      font-size: clamp(72px, 13vw, 160px);
-      letter-spacing: 0.04em;
-      color: var(--text-primary);
-    }
-    .hero-headline .italic-line {
-      display: block;
-      font-family: var(--font-display-italic);
-      font-style: italic;
-      font-size: clamp(48px, 8vw, 100px);
-      color: var(--accent);
-      margin-top: -8px;
+      animation: fadeUp 0.8s var(--ease-out) 0.5s both;
     }
 
-    .hero-sub {
-      position: relative; z-index: 1;
-      font-size: 16px;
-      color: var(--text-secondary);
-      max-width: 460px;
-      line-height: 1.7;
-      margin-bottom: 40px;
-    }
-
-    .hero-btns {
-      position: relative; z-index: 1;
-      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-    }
-    .btn-primary {
-      background: var(--text-primary);
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 14px 32px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: background var(--dur-base), transform var(--dur-fast), box-shadow var(--dur-base);
-    }
-    .btn-primary:hover {
+    .hero-subtitle-line::before,
+    .hero-subtitle-line::after {
+      content: '';
+      height: 1px;
+      width: 60px;
       background: var(--accent);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(200,55,90,0.25);
+      opacity: 0.4;
     }
-    .btn-ghost {
-      border: 1.5px solid var(--border-strong);
-      color: var(--text-primary);
-      font-family: var(--font-body);
+
+    .hero-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
       font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .hero-desc {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 44px;
+      line-height: 1.6;
+      animation: fadeUp 0.8s var(--ease-out) 0.6s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s var(--ease-out) 0.75s both;
+    }
+
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif;
       font-weight: 500;
-      padding: 13px 28px;
-      border-radius: 100px;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 16px 40px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      cursor: pointer;
       text-decoration: none;
-      transition: border-color var(--dur-base), color var(--dur-base), transform var(--dur-fast);
-    }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    /* ── TICKER ── */
-    .ticker {
-      background: var(--text-primary);
-      color: #fff;
-      padding: 14px 0;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .ticker-track {
-      display: inline-flex;
-      animation: tickerScroll 18s linear infinite;
-    }
-    .ticker-item {
-      font-family: var(--font-display-bold);
-      font-size: 15px;
-      letter-spacing: 0.12em;
-      padding: 0 40px;
-    }
-    .ticker-dot {
-      color: var(--accent);
-      font-size: 20px;
-      vertical-align: middle;
-      margin: 0 4px;
+      display: inline-block;
+      transition: background var(--dur-base) ease, transform var(--dur-base) var(--ease-spring);
     }
 
-    /* ── SERVICES ── */
-    .section { padding: 100px 48px; }
-    .section-alt { background: var(--bg-subtle); }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
 
-    .section-label {
-      font-family: var(--font-body);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.25em;
+    .btn-outline {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 15px 40px;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid rgba(44, 26, 30, 0.3);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color var(--dur-base) ease, color var(--dur-base) ease;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--text-primary);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      text-align: center;
+      animation: fadeUp 1s var(--ease-out) 1.2s both;
+    }
+
+    .hero-scroll span {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .section-title {
-      margin-bottom: 60px;
-    }
-    .section-title .bold-part {
-      font-family: var(--font-display-bold);
-      font-size: clamp(42px, 6vw, 72px);
-      letter-spacing: 0.03em;
-      line-height: 1;
-      display: block;
-    }
-    .section-title .italic-part {
-      font-family: var(--font-display-italic);
-      font-style: italic;
-      font-size: clamp(32px, 4.5vw, 54px);
-      color: var(--accent);
-      display: block;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-    .service-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px 32px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.28s var(--ease-spring), box-shadow 0.28s ease;
-      cursor: default;
-    }
-    .service-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s var(--ease-out);
-    }
-    .service-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
-    .service-card:hover::before { transform: scaleX(1); }
-
-    .service-icon {
-      font-size: 32px;
-      margin-bottom: 20px;
-      display: block;
-    }
-    .service-name {
-      font-family: var(--font-display-bold);
-      font-size: 28px;
-      letter-spacing: 0.04em;
       margin-bottom: 10px;
     }
-    .service-desc {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.65;
+
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      margin: 0 auto;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scaleY(0.7);
+      }
+    }
+
+    /* ─── Stats bar ───────────────────────────── */
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 48px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 0 24px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 48px;
+      color: var(--accent);
+      line-height: 1;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── Section base ──────────────────────── */
+    section {
+      padding: 100px 48px;
+    }
+
+    .section-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      color: var(--text-primary);
       margin-bottom: 20px;
     }
-    .service-price {
-      font-family: var(--font-display-italic);
+
+    .section-title em {
       font-style: italic;
-      font-size: 22px;
       color: var(--accent);
     }
 
-    /* ── ABOUT ── */
-    .about-layout {
+    .gold-rule {
+      width: 48px;
+      height: 1px;
+      background: var(--accent);
+      margin-bottom: 28px;
+    }
+
+    .section-body {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+    }
+
+    /* ─── About ───────────────────────────────── */
+    #about {
+      background: var(--bg-subtle);
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+
     .about-visual {
       position: relative;
     }
-    .about-photo-frame {
-      width: 100%;
-      aspect-ratio: 3/4;
-      border-radius: 24px;
-      overflow: hidden;
-      background: linear-gradient(145deg, #f0d4dc, #e8c96b, #a8d4b0);
-      display: flex; align-items: center; justify-content: center;
+
+    .about-img-frame {
       position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
     }
-    .about-photo-placeholder {
-      font-size: 80px;
-      opacity: 0.4;
+
+    .about-img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s var(--ease-out);
     }
-    .about-badge {
+
+    .about-img-frame:hover img {
+      transform: scale(1.04);
+    }
+
+    .about-accent-box {
       position: absolute;
-      bottom: -20px; right: -20px;
-      background: var(--text-primary);
-      color: #fff;
-      border-radius: 50%;
-      width: 120px; height: 120px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-family: var(--font-display-bold);
+      bottom: -24px;
+      right: -24px;
+      width: 160px;
+      height: 160px;
+      border: 1px solid var(--accent);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .about-corner {
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      width: 48px;
+      height: 48px;
+      border-top: 2px solid var(--accent);
+      border-left: 2px solid var(--accent);
+    }
+
+    .about-years-badge {
+      position: absolute;
+      top: 32px;
+      right: -20px;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 16px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .about-years-badge strong {
+      display: block;
+      font-family: 'Playfair Display', serif;
       font-size: 36px;
-      letter-spacing: 0.02em;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.2);
-    }
-    .about-badge small {
-      font-family: var(--font-body);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-top: 2px;
-    }
-
-    .about-text .section-label { margin-bottom: 16px; }
-    .about-text p {
-      font-size: 16px;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-bottom: 20px;
-    }
-
-    .stats-row {
-      display: flex; gap: 40px;
-      margin-top: 36px;
-    }
-    .stat-item { }
-    .stat-number {
-      font-family: var(--font-display-bold);
-      font-size: 48px;
-      color: var(--text-primary);
+      font-weight: 400;
       line-height: 1;
     }
-    .stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      margin-top: 4px;
+
+    .about-years-badge span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    /* ── GALLERY ── */
-    .gallery-grid {
+    .about-text .section-body {
+      margin-bottom: 24px;
+    }
+
+    .about-signature {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 28px;
+      color: var(--accent);
+      margin-top: 32px;
+    }
+
+    /* ─── Services ────────────────────────────── */
+    #services {
+      background: var(--bg);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .services-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .services-header .gold-rule {
+      margin: 0 auto 28px;
+    }
+
+    .services-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto;
-      gap: 16px;
+      gap: 2px;
     }
-    .gallery-item {
-      border-radius: 16px;
-      overflow: hidden;
+
+    .service-card {
+      background: var(--surface);
+      padding: 40px 36px;
+      border: 1px solid var(--border);
       position: relative;
-      cursor: pointer;
-      transition: transform 0.3s var(--ease-spring);
+      overflow: hidden;
+      transition: background var(--dur-base) ease, border-color var(--dur-base) ease, transform var(--dur-base) var(--ease-out);
+      cursor: default;
     }
-    .gallery-item:hover { transform: scale(1.02); }
-    .gallery-item.tall { grid-row: span 2; }
-    .gallery-swatch {
-      width: 100%; height: 100%; min-height: 200px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 40px;
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.5s var(--ease-out);
     }
-    .g1 { background: linear-gradient(135deg, #f0d4dc 0%, #c8375a 100%); min-height: 260px; }
-    .g2 { background: linear-gradient(135deg, #e8c96b 0%, #d4a820 100%); min-height: 260px; }
-    .g3 { background: linear-gradient(135deg, #a8d4b0 0%, #5aab6e 100%); min-height: 540px; }
-    .g4 { background: linear-gradient(135deg, #d4c9e8 0%, #8b70c0 100%); min-height: 260px; }
-    .g5 { background: linear-gradient(135deg, #ffd4a0 0%, #e88840 100%); min-height: 260px; }
-    .g6 { background: linear-gradient(135deg, #c0dff5 0%, #4a90d0 100%); min-height: 260px; }
+
+    .service-card:hover {
+      background: var(--surface-raised);
+      border-color: rgba(196, 164, 90, 0.3);
+      transform: translateY(-4px);
+    }
+
+    .service-card:hover::before {
+      width: 100%;
+    }
+
+    .service-icon {
+      font-size: 28px;
+      margin-bottom: 20px;
+      display: block;
+      filter: grayscale(0.3);
+    }
+
+    .service-name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 22px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .service-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .service-num {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 400;
+      color: var(--accent);
+      opacity: 0.08;
+      line-height: 1;
+      transition: opacity var(--dur-base) ease;
+    }
+
+    .service-card:hover .service-num {
+      opacity: 0.15;
+    }
+
+    /* ─── Gallery ─────────────────────────────── */
+    #gallery {
+      background: var(--bg-subtle);
+      padding: 100px 0;
+    }
+
+    .gallery-header {
+      padding: 0 48px;
+      margin-bottom: 48px;
+    }
+
+    .gallery-scroll {
+      display: flex;
+      gap: 3px;
+      overflow-x: auto;
+      padding: 0 48px 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+
+    .gallery-scroll::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .gallery-scroll::-webkit-scrollbar-thumb {
+      background: var(--accent);
+    }
+
+    .gallery-item {
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-item:nth-child(1),
+    .gallery-item:nth-child(4) {
+      width: 320px;
+      height: 420px;
+    }
+
+    .gallery-item:nth-child(2),
+    .gallery-item:nth-child(5) {
+      width: 240px;
+      height: 420px;
+    }
+
+    .gallery-item:nth-child(3),
+    .gallery-item:nth-child(6) {
+      width: 280px;
+      height: 420px;
+    }
+
+    .gallery-item-inner {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s var(--ease-out);
+    }
+
+    .gallery-item:hover .gallery-item-inner {
+      transform: scale(1.06);
+    }
 
     .gallery-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0);
-      transition: background var(--dur-base);
-      display: flex; align-items: flex-end;
-      padding: 20px;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(212, 120, 138, 0.5) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity var(--dur-base) ease;
     }
-    .gallery-item:hover .gallery-overlay { background: rgba(0,0,0,0.25); }
-    .gallery-tag {
-      background: rgba(255,255,255,0.9);
-      color: var(--text-primary);
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    /* Gallery color blocks to represent hair salon images */
+    .g1 {
+      background: linear-gradient(160deg, #f7c5d0 0%, #eea0b2 30%, #d4788a 60%, #b85570 100%);
+    }
+
+    .g2 {
+      background: linear-gradient(160deg, #fce8ed 0%, #f5c0ce 40%, #e094a8 100%);
+    }
+
+    .g3 {
+      background: linear-gradient(160deg, #fff0f3 0%, #fdd5de 50%, #e8a0b4 100%);
+    }
+
+    .g4 {
+      background: linear-gradient(160deg, #f9b8c8 0%, #e888a0 40%, #fde0e8 100%);
+    }
+
+    .g5 {
+      background: linear-gradient(160deg, #fdf0f4 0%, #f5c8d8 30%, #d4788a 60%, #f9dde5 100%);
+    }
+
+    .g6 {
+      background: linear-gradient(160deg, #fce4eb 0%, #eeafc0 40%, #c86080 100%);
+    }
+
+    .gallery-label {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
       font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      padding: 6px 14px;
-      border-radius: 100px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-primary);
       opacity: 0;
       transform: translateY(8px);
-      transition: opacity 0.25s, transform 0.25s var(--ease-out);
+      transition: all 0.3s var(--ease-out);
     }
-    .gallery-item:hover .gallery-tag { opacity: 1; transform: none; }
 
-    /* ── TESTIMONIALS ── */
+    .gallery-item:hover .gallery-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Decorative hair silhouette elements */
+    .gallery-item-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── Testimonials ────────────────────────── */
+    #testimonials {
+      background: var(--bg);
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .testimonials-header {
+      margin-bottom: 60px;
+    }
+
+    .testimonials-header .gold-rule {
+      margin: 0 auto 28px;
+    }
+
     .testimonials-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
+
     .testimonial-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px;
-      transition: transform 0.28s var(--ease-spring), box-shadow 0.28s ease;
+      padding: 36px 32px;
+      text-align: left;
+      position: relative;
+      transition: border-color var(--dur-base) ease;
     }
-    .testimonial-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
-    .stars { color: var(--accent); font-size: 16px; margin-bottom: 16px; letter-spacing: 2px; }
-    .testimonial-text {
-      font-family: var(--font-display-italic);
-      font-style: italic;
-      font-size: 18px;
-      color: var(--text-primary);
-      line-height: 1.6;
+
+    .testimonial-card:hover {
+      border-color: rgba(196, 164, 90, 0.3);
+    }
+
+    .testimonial-quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 80px;
+      font-weight: 400;
+      color: var(--accent);
+      opacity: 0.2;
+      line-height: 0.5;
+      display: block;
       margin-bottom: 20px;
     }
-    .testimonial-author {
-      display: flex; align-items: center; gap: 12px;
+
+    .testimonial-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
     }
-    .author-avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
+
+    .testimonial-stars {
+      color: var(--accent);
+      font-size: 14px;
+      margin-bottom: 14px;
+      letter-spacing: 3px;
+    }
+
+    .testimonial-author {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .testimonial-service {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── CTA Band ────────────────────────────── */
+    #cta-band {
+      background: var(--accent);
+      padding: 72px 48px;
+      text-align: center;
+    }
+
+    #cta-band .section-eyebrow {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    #cta-band .section-title {
       color: #fff;
     }
-    .av1 { background: linear-gradient(135deg, #c8375a, #f0d4dc); }
-    .av2 { background: linear-gradient(135deg, #a8d4b0, #5aab6e); }
-    .av3 { background: linear-gradient(135deg, #e8c96b, #d4a820); }
-    .author-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .author-city {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
 
-    /* ── BOOKING SECTION ── */
-    .booking-section {
-      background: var(--text-primary);
-      padding: 100px 48px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .booking-section::before {
-      content: '';
-      position: absolute;
-      top: -80px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(ellipse, rgba(200,55,90,0.15) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .booking-eyebrow {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 16px;
-    }
-    .booking-headline .bold-line {
-      font-family: var(--font-display-bold);
-      font-size: clamp(52px, 9vw, 110px);
-      letter-spacing: 0.04em;
-      color: #ffffff;
-      display: block;
-      line-height: 1;
-    }
-    .booking-headline .italic-line {
-      font-family: var(--font-display-italic);
+    #cta-band .section-title em {
+      color: rgba(255, 255, 255, 0.75);
       font-style: italic;
-      font-size: clamp(36px, 6vw, 72px);
-      color: var(--blob-gold);
-      display: block;
     }
-    .booking-sub {
-      color: rgba(255,255,255,0.55);
+
+    .cta-band-body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
       font-size: 16px;
-      max-width: 400px;
-      margin: 24px auto 44px;
-      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 36px;
     }
-    .booking-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn-light {
-      background: #ffffff;
-      color: var(--text-primary);
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 16px 36px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: background var(--dur-base), transform var(--dur-fast), box-shadow var(--dur-base);
-    }
-    .btn-light:hover {
-      background: var(--blob-gold);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(232,201,107,0.35);
-    }
-    .btn-outline-light {
-      border: 1.5px solid rgba(255,255,255,0.3);
-      color: rgba(255,255,255,0.8);
-      font-family: var(--font-body);
-      font-size: 14px;
+
+    .btn-dark {
+      font-family: 'DM Sans', sans-serif;
       font-weight: 500;
-      padding: 15px 32px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: border-color var(--dur-base), color var(--dur-base);
-    }
-    .btn-outline-light:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
-
-    /* ── CONTACT / INFO ── */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 32px;
-    }
-    .contact-card {
-      text-align: center;
-      padding: 36px 24px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      transition: border-color var(--dur-base), transform 0.28s var(--ease-spring);
-    }
-    .contact-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-    .contact-icon { font-size: 36px; margin-bottom: 16px; display: block; }
-    .contact-title {
-      font-family: var(--font-display-bold);
-      font-size: 22px;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-    }
-    .contact-info {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.65;
-    }
-    .contact-info a {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 16px 40px;
+      background: #fff;
       color: var(--accent);
+      border: none;
+      cursor: pointer;
       text-decoration: none;
+      display: inline-block;
+      transition: background var(--dur-base) ease, transform var(--dur-base) var(--ease-spring);
     }
-    .contact-info a:hover { text-decoration: underline; }
 
-    /* ── FOOTER ── */
-    .footer {
-      background: var(--blob-rose);
-      border-radius: 28px 28px 0 0;
-      margin: 0 20px;
-      padding: 60px 48px 40px;
+    .btn-dark:hover {
+      background: var(--bg-subtle);
+      transform: translateY(-2px);
     }
-    .footer-top {
+
+    /* ─── Contact ─────────────────────────────── */
+    #contact {
+      background: var(--bg-subtle);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .contact-info {}
+
+    .contact-item {
       display: flex;
-      justify-content: space-between;
       align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 40px;
-      margin-bottom: 48px;
+      gap: 20px;
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
     }
-    .footer-brand .brand-name {
-      font-family: var(--font-display-bold);
-      font-size: 38px;
-      letter-spacing: 0.08em;
-      color: var(--text-primary);
+
+    .contact-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .contact-icon {
+      font-size: 20px;
+      width: 44px;
+      height: 44px;
+      background: var(--accent-muted);
+      border: 1px solid rgba(196, 164, 90, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-item-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
       margin-bottom: 6px;
     }
-    .footer-brand .brand-name span { color: var(--accent); }
-    .footer-brand p {
-      font-size: 14px;
-      color: var(--text-secondary);
-      max-width: 240px;
-      line-height: 1.6;
+
+    .contact-item-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--text-primary);
+      line-height: 1.5;
     }
-    .footer-links { display: flex; gap: 60px; flex-wrap: wrap; }
-    .footer-col h4 {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
+
+    .contact-form {}
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
-    .footer-col ul { list-style: none; }
-    .footer-col li { margin-bottom: 10px; }
-    .footer-col a {
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
       font-size: 14px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color var(--dur-base);
+      font-weight: 400;
+      outline: none;
+      transition: border-color var(--dur-base) ease;
+      -webkit-appearance: none;
     }
-    .footer-col a:hover { color: var(--accent); }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group select option {
+      background: var(--surface);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ─── Footer ──────────────────────────────── */
+    footer {
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border);
+      padding: 60px 48px 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .footer-logo-ring {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient-logo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+    }
+
+    .footer-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-logo-inner b {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .footer-logo-inner i {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 7px;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .footer-brand-name {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .footer-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-link {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      text-decoration: none;
+      transition: border-color var(--dur-base) ease, color var(--dur-base) ease, background var(--dur-base) ease;
+    }
+
+    .social-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .footer-col h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-col ul li a {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color var(--dur-base) ease;
+    }
+
+    .footer-col ul li a:hover {
+      color: var(--accent);
+    }
+
     .footer-bottom {
-      border-top: 1px solid rgba(0,0,0,0.08);
-      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
     }
-    .footer-bottom p { font-size: 13px; color: var(--text-muted); }
-    .social-links { display: flex; gap: 12px; }
-    .social-btn {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.08);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      text-decoration: none;
-      transition: background var(--dur-base), transform var(--dur-fast);
-    }
-    .social-btn:hover { background: var(--accent); transform: scale(1.1); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      nav { padding: 16px 24px; }
-      .nav-links { display: none; }
-      .hero { padding: 100px 24px 60px; }
-      .section { padding: 72px 24px; }
-      .about-layout { grid-template-columns: 1fr; gap: 48px; }
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-      .g3 { min-height: 300px; }
-      .footer { margin: 0; border-radius: 0; }
-      .footer-top { flex-direction: column; }
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
     }
-    @media (max-width: 580px) {
-      .gallery-grid { grid-template-columns: 1fr; }
-      .gallery-item.tall { grid-row: span 1; }
-      .stats-row { gap: 24px; }
-      .booking-section { padding: 72px 24px; }
+
+    .footer-ig {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: opacity var(--dur-base) ease;
+    }
+
+    .footer-ig:hover {
+      opacity: 0.7;
+    }
+
+    /* ─── Animations ──────────────────────────── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-32px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+
+    .reveal-left.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(32px);
+      transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+
+    .reveal-right.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .delay-3 {
+      transition-delay: 0.35s;
+    }
+
+    .delay-4 {
+      transition-delay: 0.5s;
+    }
+
+    .delay-5 {
+      transition-delay: 0.65s;
+    }
+
+    .delay-6 {
+      transition-delay: 0.8s;
+    }
+
+    /* ─── Responsive ──────────────────────────── */
+    @media (max-width: 900px) {
+      nav {
+        padding: 20px 24px;
+      }
+
+      nav.scrolled {
+        padding: 14px 24px;
+      }
+
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      section {
+        padding: 72px 24px;
+      }
+
+      #about,
+      #contact {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .about-years-badge {
+        right: 0;
+      }
+
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 24px;
+      }
+
+      .stat-item:nth-child(2) {
+        border-right: none;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .gallery-scroll {
+        padding: 0 24px 16px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-title {
+        font-size: 52px;
+      }
+
+      .stats-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery-header {
+        padding: 0 24px;
+      }
+    }
+
+    /* Mobile nav overlay */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .mobile-nav.open {
+      display: flex;
+    }
+
+    .mobile-nav a {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 36px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: color var(--dur-base) ease;
+    }
+
+    .mobile-nav a:hover {
+      color: var(--accent);
+    }
+
+    .mobile-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 28px;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- NAV -->
-  <nav>
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <a href="#about" onclick="closeMobile()">Nosotros</a>
+    <a href="#services" onclick="closeMobile()">Servicios</a>
+    <a href="#gallery" onclick="closeMobile()">Galería</a>
+    <a href="#testimonials" onclick="closeMobile()">Testimonios</a>
+    <a href="#contact" onclick="closeMobile()">Contacto</a>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="mainNav">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-circle">
+        <div class="nav-logo-inner">
+          <span>LOZANO</span>
+          <span>Stylists</span>
+        </div>
+      </div>
+      <span class="nav-brand">Lozano Stylists</span>
+    </a>
     <ul class="nav-links">
-      <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#nosotros">Nosotros</a></li>
-      <li><a href="#galeria">Galería</a></li>
+      <li><a href="#about">Nosotros</a></li>
+      <li><a href="#services">Servicios</a></li>
+      <li><a href="#gallery">Galería</a></li>
+      <li><a href="#testimonials">Testimonios</a></li>
+      <li><a href="#contact">Contacto</a></li>
     </ul>
-    <a class="nav-brand" href="#">LOZANO<span>.</span></a>
-    <a class="nav-cta" href="#reserva">Reservar Cita</a>
+    <a href="#contact" class="nav-cta">Reservar cita</a>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="blob blob-4"></div>
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="lozano-hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 class="hero-title" style="margin-bottom: 2rem;">Lozano<br><em>Stylists</em></h1>
+      <div class="hero-subtitle-line">
+        <span class="hero-subtitle">Salón de Belleza</span>
+      </div>
+      <p class="hero-desc">Una familia de estilistas con más de 20 años<br>transformando tu imagen y elevando tu
+        confianza.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Reservar Cita</a>
+        <a href="#services" class="btn-outline">Nuestros Servicios</a>
+      </div>
+      <p class="hero-eyebrow" style="margin-top: 20px;">Mazatlán, Sinaloa — Desde 2004</p>
 
-    <p class="hero-eyebrow animate-entry delay-1">✦ Salón de Belleza Profesional ✦ Guadalajara</p>
-
-    <h1 class="hero-headline">
-      <span class="bold-line animate-entry delay-2">LOZANO</span>
-      <em class="italic-line animate-entry delay-3">Stylist</em>
-    </h1>
-
-    <p class="hero-sub animate-entry delay-4">
-      Donde cada cabello cuenta su propia historia. Arte, estilo y pasión en cada corte.
-    </p>
-
-    <div class="hero-btns animate-entry delay-4">
-      <a href="#reserva" class="btn-primary">Agendar Cita</a>
-      <a href="#servicios" class="btn-ghost">Ver Servicios</a>
     </div>
+
   </section>
 
-  <!-- TICKER -->
-  <div class="ticker">
-    <div class="ticker-track">
-      <span class="ticker-item">CORTE <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">COLOR <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">PEINADO <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">TRATAMIENTO <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">ALISADO <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">MECHAS <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">KERATINA <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">CORTE <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">COLOR <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">PEINADO <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">TRATAMIENTO <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">ALISADO <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">MECHAS <span class="ticker-dot">◆</span></span>
-      <span class="ticker-item">KERATINA <span class="ticker-dot">◆</span></span>
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item reveal delay-1">
+      <span class="stat-number">20+</span>
+      <span class="stat-label">Años de Experiencia</span>
+    </div>
+    <div class="stat-item reveal delay-2">
+      <span class="stat-number">11.5K</span>
+      <span class="stat-label">Seguidores</span>
+    </div>
+    <div class="stat-item reveal delay-3">
+      <span class="stat-number">911</span>
+      <span class="stat-label">Publicaciones</span>
+    </div>
+    <div class="stat-item reveal delay-4">
+      <span class="stat-number">∞</span>
+      <span class="stat-label">Clientes Felices</span>
     </div>
   </div>
 
-  <!-- SERVICES -->
-  <section class="section" id="servicios">
-    <div style="max-width:1100px; margin:0 auto;">
-      <p class="section-label reveal">( Nuestros Servicios )</p>
-      <div class="section-title reveal">
-        <span class="bold-part">LO QUE</span>
-        <em class="italic-part">ofrecemos</em>
-      </div>
-      <div class="services-grid">
-        <div class="service-card reveal">
-          <span class="service-icon">✂️</span>
-          <div class="service-name">CORTE</div>
-          <p class="service-desc">Cortes personalizados para mujer, hombre y niño. Diseñados para resaltar tu belleza natural con técnicas modernas.</p>
-          <span class="service-price">desde $200</span>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-icon">🎨</span>
-          <div class="service-name">COLOR</div>
-          <p class="service-desc">Tintes, mechas, balayage, ombre y más. Usamos productos premium para colores vibrantes y duraderos.</p>
-          <span class="service-price">desde $450</span>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-icon">💇‍♀️</span>
-          <div class="service-name">ALISADO</div>
-          <p class="service-desc">Tratamiento de keratina y alisado permanente. Cabello liso, sedoso y sin frizz por meses.</p>
-          <span class="service-price">desde $800</span>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-icon">🌿</span>
-          <div class="service-name">TRATAMIENTO</div>
-          <p class="service-desc">Hidratación profunda, reconstrucción y nutrición capilar. Tu cabello merece el mejor cuidado.</p>
-          <span class="service-price">desde $350</span>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-icon">💍</span>
-          <div class="service-name">PEINADO</div>
-          <p class="service-desc">Peinados para bodas, quinceañeras y eventos especiales. Lucirás espectacular en tu gran día.</p>
-          <span class="service-price">desde $500</span>
-        </div>
-        <div class="service-card reveal">
-          <span class="service-icon">✨</span>
-          <div class="service-name">MECHAS</div>
-          <p class="service-desc">Mechas californianas, francesas y técnicas modernas. Dale luz y dimensión a tu cabello.</p>
-          <span class="service-price">desde $600</span>
+  <!-- About -->
+  <section id="about">
+    <div class="about-visual reveal-left">
+      <div class="about-img-frame">
+        <!-- Artistic representation of salon atmosphere -->
+        <div
+          style="width:100%;height:100%;background:linear-gradient(160deg,#fdf0f2 0%,#f7d6de 25%,#eebac6 50%,#d4788a22 75%,#fefcfc 100%);display:flex;align-items:center;justify-content:center;">
+          <video src="./joce.mp4" style="width: 100%; height: 100%;" autoplay muted loop playsinline></video>
         </div>
       </div>
+      <div class="about-accent-box"></div>
+      <div class="about-corner"></div>
+      <div class="about-years-badge">
+        <strong>20</strong>
+        <span>Años</span>
+      </div>
+    </div>
+    <div class="about-text reveal-right">
+      <span class="section-eyebrow">Nuestra Historia</span>
+      <h2 class="section-title">Arte &amp; Pasión<br>en <em>cada cabello</em></h2>
+      <div class="gold-rule"></div>
+      <p class="section-body">Somos una familia de Estilistas con más de 20 años de experiencia en la industria de la
+        belleza. En Lozano Stylists, cada cliente es tratado como parte de nuestra familia, con atención personalizada y
+        técnicas de vanguardia.</p>
+      <p class="section-body" style="margin-top:16px;">Desde extensiones de cabello hasta tratamientos de color,
+        maquillaje profesional y más — nuestro compromiso es realzar tu belleza natural con excelencia y dedicación.</p>
+      <p class="about-signature">Lozano Stylists</p>
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section class="section section-alt" id="nosotros">
-    <div style="max-width:1100px; margin:0 auto;">
-      <div class="about-layout">
-        <div class="about-visual reveal">
-          <div class="about-photo-frame">
-            <span class="about-photo-placeholder">💇</span>
-          </div>
-          <div class="about-badge">
-            10+
-            <small>Años</small>
-          </div>
-        </div>
-        <div class="about-text reveal">
-          <p class="section-label">( Nuestra Historia )</p>
-          <div class="section-title" style="margin-bottom:28px;">
-            <span class="bold-part">PASIÓN POR</span>
-            <em class="italic-part">el estilo</em>
-          </div>
-          <p>
-            Somos un equipo de estilistas apasionados con más de 10 años de experiencia transformando looks y elevando la confianza de nuestros clientes.
+  <!-- Services -->
+  <section id="services">
+    <div class="services-header">
+      <span class="section-eyebrow reveal">Lo que ofrecemos</span>
+      <h2 class="section-title reveal delay-1">Nuestros <em>Servicios</em></h2>
+      <div class="gold-rule reveal delay-2"></div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal delay-1">
+        <span class="service-icon">✂️</span>
+        <span class="service-num">01</span>
+        <h3 class="service-name">Extensiones de Cabello</h3>
+        <p class="service-desc">Transforma y da volumen a tu cabello con nuestras extensiones de alta calidad, aplicadas
+          con técnicas profesionales.</p>
+      </div>
+      <div class="service-card reveal delay-2">
+        <span class="service-icon">🎨</span>
+        <span class="service-num">02</span>
+        <h3 class="service-name">Color &amp; Balayage</h3>
+        <p class="service-desc">Retoques de raíz, mechas, balayage y diseños de color personalizados para realzar tu
+          tono natural.</p>
+      </div>
+      <div class="service-card reveal delay-3">
+        <span class="service-icon">💆</span>
+        <span class="service-num">03</span>
+        <h3 class="service-name">Tratamientos Capilares</h3>
+        <p class="service-desc">Laminado, keratina y tratamientos de hidratación profunda para cabellos sanos y
+          luminosos.</p>
+      </div>
+      <div class="service-card reveal delay-4">
+        <span class="service-icon">💄</span>
+        <span class="service-num">04</span>
+        <h3 class="service-name">Maquillaje Profesional</h3>
+        <p class="service-desc">Maquillaje para eventos especiales, bodas y sesiones fotográficas a cargo de nuestros
+          expertos.</p>
+      </div>
+      <div class="service-card reveal delay-5">
+        <span class="service-icon">💅</span>
+        <span class="service-num">05</span>
+        <h3 class="service-name">Uñas &amp; Depilaciones</h3>
+        <p class="service-desc">Diseño de uñas, extensiones y depilación con los mejores productos del mercado.</p>
+      </div>
+      <div class="service-card reveal delay-6">
+        <span class="service-icon">✨</span>
+        <span class="service-num">06</span>
+        <h3 class="service-name">Microblading &amp; Más</h3>
+        <p class="service-desc">Diseño y definición de cejas con microblading, peinados y rizado de castaña para
+          cualquier ocasión.</p>
+      </div>
+      <div class="service-card reveal delay-1">
+        <span class="service-icon">🎨</span>
+        <span class="service-num">07</span>
+        <h3 class="service-name">Baño Color</h3>
+        <p class="service-desc">Refresca el tono de tu cabello aportando un extra de brillo y suavidad.</p>
+      </div>
+      <div class="service-card reveal delay-2">
+        <span class="service-icon">✂️</span>
+        <span class="service-num">08</span>
+        <h3 class="service-name">Corte</h3>
+        <p class="service-desc">Cortes de tendencia y estilo clásico adaptados a tus facciones.</p>
+      </div>
+      <div class="service-card reveal delay-3">
+        <span class="service-icon">💇‍♀️</span>
+        <span class="service-num">09</span>
+        <h3 class="service-name">Corte Bordado</h3>
+        <p class="service-desc">Elimina puntas abiertas sin afectar ni sacrificar el largo de tu cabello.</p>
+      </div>
+
+      <div class="service-card reveal delay-5">
+        <span class="service-icon">👁️</span>
+        <span class="service-num">11</span>
+        <h3 class="service-name">Diseño de Ceja</h3>
+        <p class="service-desc">Enmarca tu mirada con un diseño simétrico, cuidado y completamente natural.</p>
+      </div>
+      <div class="service-card reveal delay-6">
+        <span class="service-icon">🦋</span>
+        <span class="service-num">12</span>
+        <h3 class="service-name">Extensión de Pestaña</h3>
+        <p class="service-desc">Luce pestañas largas y con un volumen perfecto para resaltar tu mirada.</p>
+      </div>
+      <div class="service-card reveal delay-1">
+        <span class="service-icon">🧴</span>
+        <span class="service-num">13</span>
+        <h3 class="service-name">Extracciones</h3>
+        <p class="service-desc">Servicio experto de extracción de color cuidando en todo momento tu cabello.</p>
+      </div>
+      <div class="service-card reveal delay-2">
+        <span class="service-icon">💅</span>
+        <span class="service-num">14</span>
+        <h3 class="service-name">Gelish pies y manos</h3>
+        <p class="service-desc">Esmaltado en gel de larga duración con un acabado impecable para tus uñas.</p>
+      </div>
+      <div class="service-card reveal delay-3">
+        <span class="service-icon">💆</span>
+        <span class="service-num">15</span>
+        <h3 class="service-name">Laminado</h3>
+        <p class="service-desc">Cejas perfectas, peinadas, fijadas y con un efecto poblado natural duradero.</p>
+      </div>
+      <div class="service-card reveal delay-4">
+        <span class="service-icon">🌈</span>
+        <span class="service-num">16</span>
+        <h3 class="service-name">Colorimetría</h3>
+        <p class="service-desc">Técnicas avanzadas de colorimetría para resultados personalizados y únicos.</p>
+      </div>
+      <div class="service-card reveal delay-5">
+        <span class="service-icon">👰</span>
+        <span class="service-num">17</span>
+        <h3 class="service-name">Novia</h3>
+        <p class="service-desc">Asesoría de imagen integral, maquillaje y peinado especialista para tu gran día.</p>
+      </div>
+      <div class="service-card reveal delay-6">
+        <span class="service-icon">🖌️</span>
+        <span class="service-num">18</span>
+        <h3 class="service-name">Tinte</h3>
+        <p class="service-desc">Aplicación de tinte profesional ideal para cubrir canas o cambiar de look.</p>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery">
+    <div class="gallery-header">
+      <span class="section-eyebrow reveal">Nuestro trabajo</span>
+      <h2 class="section-title reveal delay-1">Galería de <em>Transformaciones</em></h2>
+      <div class="gold-rule reveal delay-2"></div>
+    </div>
+    <div class="gallery-scroll" style="display: flex; justify-content: center; padding: 2rem 0;">
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/lozanostylists/"
+        data-instgrm-version="14"
+        style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:50vw; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
+        <div style="padding:16px;">
+          <a href="https://www.instagram.com/lozanostylists/"
+            style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;"
+            target="_blank">
+            <div style=" display: flex; flex-direction: row; align-items: center;">
+              <div
+                style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;">
+              </div>
+              <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;">
+                <div
+                  style=" background-color: #F4F4F4; border-radius: 4px; height: 14px; margin-bottom: 6px; width: 100px;">
+                </div>
+                <div style=" background-color: #F4F4F4; border-radius: 4px; height: 14px; width: 60px;"></div>
+              </div>
+            </div>
+            <div style="padding: 19% 0;"></div>
+            <div style="display:block; height:50px; margin:0 auto 12px; width:50px;">
+              <svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg"
+                xmlns:xlink="https://www.w3.org/1999/xlink">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-511.000000, -20.000000)" fill="#000000">
+                    <g>
+                      <path
+                        d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886">
+                      </path>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div style="padding-top: 8px;">
+              <div
+                style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">
+                Ver perfil en Instagram</div>
+            </div>
+            <div style="padding: 12.5% 0;"></div>
+            <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;">
+              <div>
+                <div
+                  style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);">
+                </div>
+                <div
+                  style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;">
+                </div>
+                <div
+                  style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);">
+                </div>
+              </div>
+              <div style="margin-left: 8px;">
+                <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;">
+                </div>
+                <div
+                  style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)">
+                </div>
+              </div>
+              <div style="margin-left: auto;">
+                <div
+                  style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);">
+                </div>
+                <div
+                  style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);">
+                </div>
+                <div
+                  style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);">
+                </div>
+              </div>
+            </div>
+            <div
+              style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;">
+              <div
+                style=" background-color: #F4F4F4; border-radius: 4px; height: 14px; margin-bottom: 6px; width: 224px;">
+              </div>
+              <div style=" background-color: #F4F4F4; border-radius: 4px; height: 14px; width: 144px;"></div>
+            </div>
+          </a>
+          <p
+            style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;">
+            <a href="https://www.instagram.com/lozanostylists/"
+              style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;"
+              target="_blank">Lozano Stylists (@lozanostylists)</a>
           </p>
-          <p>
-            En <strong>Lozano Stylist</strong> creemos que un buen corte va más allá de la estética — es una expresión de quién eres. Nos especializamos en técnicas de vanguardia con un trato personalizado y cálido.
-          </p>
-          <p>
-            Cada visita es una experiencia única: desde la consulta inicial hasta el último detalle, cuidamos cada aspecto de tu servicio.
-          </p>
-          <div class="stats-row">
-            <div class="stat-item">
-              <div class="stat-number">2K+</div>
-              <div class="stat-label">Clientes Felices</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">12</div>
-              <div class="stat-label">Servicios Disponibles</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">5⭐</div>
-              <div class="stat-label">Calificación</div>
-            </div>
-          </div>
         </div>
+      </blockquote>
+      <script async src="//www.instagram.com/embed.js"></script>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section id="testimonials">
+    <div class="testimonials-header">
+      <span class="section-eyebrow reveal">Lo que dicen nuestras clientas</span>
+      <h2 class="section-title reveal delay-1"><em>Testimonios</em></h2>
+      <div class="gold-rule reveal delay-2"></div>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal delay-1">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Me hicieron un trabajo increíble con mis extensiones. El resultado fue exactamente
+          lo que quería, se veían completamente naturales y duraron muchísimo.</p>
+        <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+        <p class="testimonial-author">Sofía M.</p>
+        <p class="testimonial-service">Extensiones de cabello</p>
+      </div>
+      <div class="testimonial-card reveal delay-2">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">El balayage que me hicieron quedó espectacular. Son muy profesionales y saben
+          exactamente qué tonos van bien con tu piel. ¡Los recomiendo al 100%!</p>
+        <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+        <p class="testimonial-author">Valentina R.</p>
+        <p class="testimonial-service">Balayage &amp; Color</p>
+      </div>
+      <div class="testimonial-card reveal delay-3">
+        <span class="testimonial-quote-mark">"</span>
+        <p class="testimonial-text">Más de 3 años siendo clienta de Lozano Stylists y siempre salgo feliz. El trato es
+          excelente y la calidad del trabajo es incomparable en Mazatlán.</p>
+        <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+        <p class="testimonial-author">Mariana C.</p>
+        <p class="testimonial-service">Clienta frecuente</p>
       </div>
     </div>
   </section>
 
-  <!-- GALLERY -->
-  <section class="section" id="galeria">
-    <div style="max-width:1100px; margin:0 auto;">
-      <p class="section-label reveal">( Nuestro Trabajo )</p>
-      <div class="section-title reveal">
-        <span class="bold-part">GALERÍA</span>
-        <em class="italic-part">de estilos</em>
-      </div>
-      <div class="gallery-grid">
-        <div class="gallery-item reveal">
-          <div class="gallery-swatch g1">💅</div>
-          <div class="gallery-overlay"><span class="gallery-tag">Balayage</span></div>
-        </div>
-        <div class="gallery-item reveal">
-          <div class="gallery-swatch g2">✨</div>
-          <div class="gallery-overlay"><span class="gallery-tag">Mechas Doradas</span></div>
-        </div>
-        <div class="gallery-item tall reveal">
-          <div class="gallery-swatch g3" style="min-height:100%;">🌿</div>
-          <div class="gallery-overlay"><span class="gallery-tag">Corte & Color</span></div>
-        </div>
-        <div class="gallery-item reveal">
-          <div class="gallery-swatch g4">💜</div>
-          <div class="gallery-overlay"><span class="gallery-tag">Color Fantasía</span></div>
-        </div>
-        <div class="gallery-item reveal">
-          <div class="gallery-swatch g5">🧡</div>
-          <div class="gallery-overlay"><span class="gallery-tag">Keratina</span></div>
-        </div>
-        <div class="gallery-item reveal" style="grid-column: span 1;">
-          <div class="gallery-swatch g6">💙</div>
-          <div class="gallery-overlay"><span class="gallery-tag">Peinado Novia</span></div>
-        </div>
-      </div>
-    </div>
+  <!-- CTA Band -->
+  <section id="cta-band">
+    <span class="section-eyebrow reveal">¿Lista para el cambio?</span>
+    <h2 class="section-title reveal delay-1">Agenda tu cita<br><em>hoy mismo</em></h2>
+    <p class="cta-band-body reveal delay-2">Visítanos en el Laguna Plaza Business Center, Mazatlán</p>
+    <a href="#contact" class="btn-dark reveal delay-3">Contactar Ahora</a>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="section section-alt" id="resenas">
-    <div style="max-width:1100px; margin:0 auto;">
-      <p class="section-label reveal">( Reseñas )</p>
-      <div class="section-title reveal">
-        <span class="bold-part">LO QUE DICEN</span>
-        <em class="italic-part">nuestras clientas</em>
-      </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card reveal">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"El mejor salón en el que he estado. Mi cabello quedó increíble y el trato fue muy profesional."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar av1">M</div>
-            <div>
-              <div class="author-name">María González</div>
-              <div class="author-city">Guadalajara, Jalisco</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card reveal">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Llevé una foto de referencia y lo lograron a la perfección. ¡Súper recomendado! Volvería mil veces."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar av2">L</div>
-            <div>
-              <div class="author-name">Lucía Ramírez</div>
-              <div class="author-city">Zapopan, Jalisco</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card reveal">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Me hicieron el peinado para mi boda y fue exactamente lo que soñé. ¡Gracias, Lozano Stylist!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar av3">V</div>
-            <div>
-              <div class="author-name">Valeria Torres</div>
-              <div class="author-city">Tlaquepaque, Jalisco</div>
-            </div>
-          </div>
+  <!-- Contact -->
+  <section id="contact">
+    <div class="contact-info">
+      <span class="section-eyebrow reveal">Encuéntranos</span>
+      <h2 class="section-title reveal delay-1">Visítanos &amp;<br><em>Contáctanos</em></h2>
+      <div class="gold-rule reveal delay-2"></div>
+      <div class="contact-item reveal delay-3">
+        <div class="contact-icon">📍</div>
+        <div>
+          <p class="contact-item-label">Dirección</p>
+          <p class="contact-item-value">Laguna Plaza Business Center<br>Local e-4, Av. Reforma 2007<br>Mazatlán, Sinaloa
+            82149</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- BOOKING -->
-  <section class="booking-section" id="reserva">
-    <p class="booking-eyebrow animate-entry">✦ Agenda tu visita ✦</p>
-    <div class="booking-headline">
-      <span class="bold-line reveal">RESERVA TU</span>
-      <em class="italic-line reveal">cita hoy</em>
-    </div>
-    <p class="booking-sub reveal">Transforma tu look con nosotros. Estamos listos para hacer de tu experiencia algo especial.</p>
-    <div class="booking-btns reveal">
-      <a href="https://wa.me/523312345678?text=Hola,%20me%20gustaría%20agendar%20una%20cita" class="btn-light" target="_blank">📱 WhatsApp</a>
-      <a href="tel:+523312345678" class="btn-outline-light">📞 Llamar Ahora</a>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section class="section" id="contacto">
-    <div style="max-width:1100px; margin:0 auto;">
-      <p class="section-label reveal">( Encuéntranos )</p>
-      <div class="section-title reveal">
-        <span class="bold-part">HORARIOS</span>
-        <em class="italic-part">& contacto</em>
-      </div>
-      <div class="contact-grid">
-        <div class="contact-card reveal">
-          <span class="contact-icon">📍</span>
-          <div class="contact-title">DIRECCIÓN</div>
-          <p class="contact-info">Av. Vallarta 1234<br>Col. Americana<br>Guadalajara, Jalisco</p>
-        </div>
-        <div class="contact-card reveal">
-          <span class="contact-icon">🕐</span>
-          <div class="contact-title">HORARIOS</div>
-          <p class="contact-info">Lun – Vie: 9:00 – 19:00<br>Sábado: 9:00 – 18:00<br>Domingo: Cerrado</p>
-        </div>
-        <div class="contact-card reveal">
-          <span class="contact-icon">📱</span>
-          <div class="contact-title">TELÉFONO</div>
-          <p class="contact-info">
-            <a href="tel:+523312345678">+52 (33) 1234-5678</a><br>
-            <a href="https://wa.me/523312345678" target="_blank">WhatsApp disponible</a>
-          </p>
-        </div>
-        <div class="contact-card reveal">
-          <span class="contact-icon">📸</span>
-          <div class="contact-title">REDES</div>
-          <p class="contact-info">
-            <a href="#">@lozanostylist</a><br>
-            Instagram · Facebook · TikTok
+      <div class="contact-item reveal delay-4">
+        <div class="contact-icon">📸</div>
+        <div>
+          <p class="contact-item-label">Instagram</p>
+          <p class="contact-item-value">
+            <a href="https://instagram.com/lozanostylists" target="_blank"
+              style="color:var(--accent);text-decoration:none;">@lozanostylists</a>
           </p>
         </div>
       </div>
+      <div class="contact-item reveal delay-5">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <p class="contact-item-label">Horario</p>
+          <p class="contact-item-value">Lunes – Sábado: 9:00 AM – 7:00 PM<br>Domingos: Con cita previa</p>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <span class="section-eyebrow">Agenda tu cita</span>
+      <h3 class="section-title" style="font-size:36px;">Reserva tu<br><em>sesión</em></h3>
+      <div class="gold-rule"></div>
+      <div class="form-row">
+        <p style="margin-bottom: 24px; font-family: 'DM Sans', sans-serif; color: var(--text-muted); line-height: 1.6;">
+          Para brindarte la mejor atención y resolver cualquier duda, estamos agendando citas directamente por WhatsApp.
+          ¡Haz clic en el botón de abajo para empezar!
+        </p>
+      </div>
+      <a href="https://wa.me/526690000000" target="_blank" class="btn-primary"
+        style="width:100%; display: flex; align-items: center; justify-content: center; gap: 10px; background-color: #116d33; color: #fff; border: none; text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+          </path>
+        </svg>
+        Contáctanos por WhatsApp
+      </a>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="brand-name">LOZANO<span>.</span></div>
-        <p>Arte y estilo en cada corte. Tu belleza, nuestra pasión.</p>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-logo">
+          <div class="footer-logo-ring">
+            <div class="footer-logo-inner">
+              <b>LOZANO</b>
+              <i>Stylists</i>
+            </div>
+          </div>
+          <span class="footer-brand-name">Lozano Stylists</span>
+        </div>
+        <p class="footer-tagline">Una familia de estilistas,<br>una pasión por la belleza.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/lozanostylists" target="_blank" class="social-link" title="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+            </svg>
+          </a>
+          <a href="https://instagram.com/lozanoprofessionalmakeup" target="_blank" class="social-link"
+            title="Makeup Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </a>
+        </div>
       </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h4>Servicios</h4>
-          <ul>
-            <li><a href="#">Corte de Cabello</a></li>
-            <li><a href="#">Coloración</a></li>
-            <li><a href="#">Alisado</a></li>
-            <li><a href="#">Tratamientos</a></li>
-            <li><a href="#">Peinados</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Salón</h4>
-          <ul>
-            <li><a href="#nosotros">Nosotros</a></li>
-            <li><a href="#galeria">Galería</a></li>
-            <li><a href="#resenas">Reseñas</a></li>
-            <li><a href="#reserva">Reservaciones</a></li>
-            <li><a href="#contacto">Contacto</a></li>
-          </ul>
-        </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul style="column-count: 2; column-gap: 20px;">
+          <li><a href="#services">Extensiones</a></li>
+          <li><a href="#services">Color &amp; Balayage</a></li>
+          <li><a href="#services">Tratamientos</a></li>
+          <li><a href="#services">Maquillaje</a></li>
+          <li><a href="#services">Uñas</a></li>
+          <li><a href="#services">Microblading</a></li>
+          <li><a href="#services">Baño Color</a></li>
+          <li><a href="#services">Corte</a></li>
+          <li><a href="#services">Corte Bordado</a></li>
+          <li><a href="#services">Depilaciones</a></li>
+          <li><a href="#services">Diseño de Ceja</a></li>
+          <li><a href="#services">Extensión Pestaña</a></li>
+          <li><a href="#services">Extracciones</a></li>
+          <li><a href="#services">Gelish</a></li>
+          <li><a href="#services">Laminado</a></li>
+          <li><a href="#services">Colorimetría</a></li>
+          <li><a href="#services">Novia</a></li>
+          <li><a href="#services">Tinte</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#hero">Inicio</a></li>
+          <li><a href="#about">Nosotros</a></li>
+          <li><a href="#gallery">Galería</a></li>
+          <li><a href="#testimonials">Testimonios</a></li>
+          <li><a href="#contact">Contacto</a></li>
+        </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 Lozano Stylist. Todos los derechos reservados.</p>
-      <div class="social-links">
-        <a class="social-btn" href="#" title="Instagram">📸</a>
-        <a class="social-btn" href="#" title="Facebook">👍</a>
-        <a class="social-btn" href="#" title="TikTok">🎵</a>
-        <a class="social-btn" href="#" title="WhatsApp">💬</a>
-      </div>
+      <p class="footer-copy">© 2025 Lozano Stylists. Todos los derechos reservados.</p>
+      <a href="https://instagram.com/lozanostylists" target="_blank" class="footer-ig">@lozanostylists</a>
     </div>
   </footer>
 
   <script>
-    // Scroll reveal
+    // Scroll-triggered nav
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Intersection Observer for reveals
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(el => {
         if (el.isIntersecting) {
@@ -1079,7 +1919,23 @@
         }
       });
     }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right')
+      .forEach(el => observer.observe(el));
+
+    // Mobile nav
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobileNav').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('mobileClose').addEventListener('click', closeMobile);
+    function closeMobile() {
+      document.getElementById('mobileNav').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+
   </script>
 </body>
+
 </html>
